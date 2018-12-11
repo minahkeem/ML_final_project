@@ -68,20 +68,20 @@ function drawBaseHeatMap(groupAvgData, stdScaleData) {
     
     pos = left_margin-rect_w;
     
-    lines.selectAll("rect")
+    lines.selectAll("rect.pixels")
         .data((d) => {
             var vals = [];
             for (key in d.team_stats) {
                 if (key !== 'SEMI-FINAL' && key !=='PLAYOFF' && key !== 'PLAYER' && key !== 'TEAM') {
-                    vals.push(d.team_stats[key]);
+                    vals.push([key, d.team_stats[key]]);
                 }
             }
             return vals;
         })
         .enter()
         .append("rect")
-        .attr("x", (d) => {
-            if (pos >= 840) {
+        .attr("x", () => {
+            if (pos >= 810) {
                 pos = left_margin-rect_w;
             }
             pos = pos + rect_w;
@@ -91,8 +91,12 @@ function drawBaseHeatMap(groupAvgData, stdScaleData) {
         .attr("width", rect_w)
         .attr("height", line_h)
         .attr("fill", (d) => {
-            return colorScale(colorInterpolate(d));
+            return colorScale(colorInterpolate(d[1]));
         })
+        .append("svg:title")
+        .text((d) => {
+            return "AVERAGE ".concat(d[0].concat(": ".concat(d[1])));
+        });
 }
 
 function main() {
